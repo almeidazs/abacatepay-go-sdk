@@ -30,7 +30,7 @@ func New(cfg ClientConfig) (*Client, error) {
 	}
 
 	baseURL := cfg.BaseURL
-	
+
 	if baseURL == "" {
 		baseURL = getenv("ABACATEPAY_API_URL", "https://api.abacatepay.com")
 	}
@@ -53,7 +53,7 @@ func New(cfg ClientConfig) (*Client, error) {
 	}
 
 	return &Client{
-		http:          httpClient,
+		http: httpClient,
 	}, nil
 }
 

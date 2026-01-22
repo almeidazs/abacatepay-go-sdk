@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/AbacatePay/abacatepay-go-sdk/internal/pkg/fetch"
+	"github.com/AbacatePay/abacatepay-go-sdk/v1/customers"
 )
 
 const Version = "1"
@@ -22,6 +23,8 @@ type ClientConfig struct {
 
 type Client struct {
 	http *fetch.Fetch
+
+	Customers *customers.Customers
 }
 
 func New(cfg ClientConfig) (*Client, error) {
@@ -30,28 +33,33 @@ func New(cfg ClientConfig) (*Client, error) {
 	}
 
 	baseURL := cfg.BaseURL
+
 	if baseURL == "" {
 		baseURL = getenv("ABACATEPAY_API_URL", "https://api.abacatepay.com")
 	}
 
 	timeout := cfg.Timeout
+
 	if timeout <= 0 {
 		timeout = DefaultTimeout
 	}
 
-	httpClient, err := fetch.New(fetch.Config{
+	http, err := fetch.New(fetch.Config{
 		BaseURL: baseURL,
 		APIKey:  cfg.APIKey,
 		Version: Version,
 		Timeout: timeout,
 	})
+
 	if err != nil {
 		return nil, err
 	}
 
 	return &Client{
-		http:    httpClient,
+		http:      http,
+		Customers: customers.New(http),
 	}, nil
+
 }
 
 func getenv(key, fallback string) string {
